@@ -1,36 +1,134 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Personalised Task Scheduler & Alerter
 
-## Getting Started
+A full-featured task scheduling and notification system built with **Next.js**, **Supabase**, and **Edge Functions**. Users can create one-time or custom recurring tasks, receive timely alerts, and manage notifications in real-time.
 
-First, run the development server:
+---
 
-```bash
+## Features
+
+- **User Authentication**: Signup and login using Supabase Auth.
+- **Task Management**:
+  - Create **one-time** or **custom recurring** tasks.
+  - Set **task name**, **date & time**, and custom notification preferences.
+- **Notification System**:
+  - Receive **real-time notifications** for upcoming tasks.
+  - Supports **custom notification times**, 1-hour and 24-hour reminders.
+  - Notifications are displayed in a **bell dropdown** in the UI.
+- **Edge Functions & Cron Jobs**:
+  - Notifications are generated server-side via Supabase Edge Functions.
+  - Cron job periodically triggers the notification generator.
+- **Realtime Updates**: Frontend receives notifications instantly using Supabase Realtime.
+- **Mark as Read**: Users can mark notifications as read directly from the UI.
+
+---
+
+## Tech Stack
+
+- **Frontend**: Next.js, React, TypeScript, Tailwind CSS  
+- **Backend & DB**: Supabase (Postgres, Auth, Realtime)  
+- **Serverless Functions**: Supabase Edge Functions (Deno)  
+- **Deployment**: Vercel / Supabase Hosting  
+
+---
+
+## Project Structure
+```
+├── app/ # Next.js app pages
+├── components/ # React components (NotificationBell, TaskForm, etc.)
+├── utils/ # Helper modules (supabase client, fetchers)
+│ ├── fetch_live_tasks.ts
+│ ├── notifications.ts
+│ └── ...
+├── functions/ # Supabase Edge Functions
+│ └── generate-notifications/
+├── models/ # ML/impact ranking models (optional)
+├── data/ # Sample datasets or seeds
+├── notebooks/ # Experimentation & testing notebooks
+├── public/ # Static assets
+├── .env # Environment variables
+└── package.json
+
+```
+
+---
+
+## Setup & Installation
+
+1. **Clone the repository**
+
+```
+git clone <repo-url>
+cd personalised-task-scheduler
+```
+
+2. **Install dependencies**
+
+```
+npm install
+# or
+yarn install
+```
+
+3. **Configure environment variables** (.env.local)
+
+```
+NEXT_PUBLIC_SUPABASE_URL=<your-supabase-url>
+NEXT_PUBLIC_SUPABASE_ANON_KEY=<your-supabase-anon-key>
+SUPABASE_SERVICE_ROLE_KEY=<your-supabase-service-role-key>
+```
+
+4. **Run development server**
+
+```
 npm run dev
 # or
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+5. **Supabase Edge Function**
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+supabase functions deploy generate-notifications
+supabase functions invoke generate-notifications --no-verify-jwt
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
+## Usage
 
-## Learn More
+1. Sign up / log in.
 
-To learn more about Next.js, take a look at the following resources:
+2. Create a new task:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+3. Choose One-time or Custom recurrence.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+ - Set task name, date/time, and notification preferences.
 
-## Deploy on Vercel
+ - Check the Notification Bell in the header for alerts.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+4. Click a notification to mark as read.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## Testing Notifications Immediately
+
+- Use the edge function invoke command to trigger notifications instantly:
+```
+supabase functions invoke generate-notifications --no-verify-jwt
+```
+- Ensure your tasks table has upcoming tasks and settings exist for your user.
+
+## Contributing
+
+1. Fork the repo
+
+2. Create a new branch (git checkout -b feature/my-feature)
+
+3. Commit your changes (git commit -am 'Add new feature')
+
+4. Push to the branch (git push origin feature/my-feature)
+
+5. Open a pull request
+
+## License
+
+MIT License © [UzzyDizzy]
